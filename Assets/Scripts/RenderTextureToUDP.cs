@@ -24,6 +24,7 @@
         private UdpClient client;
 
         //UdpSendWaitTime/ms
+        [SerializeField]
         private float timeOut = 0.003f;//0.003f;  //s  0.001 ms 0.000001 us
 
         private float timeElapsed;
@@ -37,7 +38,6 @@
             //udpSender.ConnectClient(host,port);
             //udpSender.Test_Send();
 
-            
 
         }
 
@@ -62,6 +62,22 @@
         {
             //udpSender.CloseClient();
             client.Close();
+        }
+
+        //pouseTimeは//0.003f;  //s  0.001 ms 0.000001 us
+        void pouse(float pouseTime)
+        {
+            timeElapsed = 0.0f;
+            while (true)
+            {
+                //Debug.Log(timeElapsed);
+                timeElapsed += Time.deltaTime;
+                if (pouseTime < timeElapsed)
+                {
+                    break;
+                }
+            }
+            
         }
 
 
@@ -160,10 +176,11 @@
                 contoursNum = contoursNum + contours[i].Length;
                 for (int j = 0; j < contours[i].Length; j++)
                 {
-                    timeElapsed += Time.deltaTime;
+                    pouse(timeOut);
+                    //timeElapsed += Time.deltaTime;
 
-                    if (timeElapsed >= timeOut)
-                    {
+                    //if (timeElapsed >= timeOut)
+                    //{
                         // Do anything
                         double distance = decrementPoints(contours[i][j]);
                         if (distance <= 1)  //ポイントとポイントの距離が短い場合は処理を行わない。
@@ -191,9 +208,9 @@
                         //Debug.Log("time:"+timeElapsed);
                         //Debug.Log("timeout:" + timeOut);
 
-                        timeElapsed = 0.0f;
+                      //  timeElapsed = 0.0f;
 
-                    }
+                    //}
                     
                     
                 }
@@ -265,8 +282,6 @@
                 MonoBehaviour.Destroy(oldChangedTex);
                 oldChangedTex = changedTex;
             }
-
-
         }
 
 
