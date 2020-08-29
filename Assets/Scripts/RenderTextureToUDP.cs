@@ -25,9 +25,12 @@
 
         //UdpSendWaitTime/ms
         [SerializeField]
-        private float timeOut = 0.003f;//0.003f;  //s  0.001 ms 0.000001 us
+        private float waitTime = 0.003f;//0.003f;  //s  0.001 ms 0.000001 us
 
         private float timeElapsed;
+
+        [SerializeField]
+        private int deleteDistance=1;  //2点間の距離が近いと送信しない。
 
 
         void Start()
@@ -115,7 +118,7 @@
                         {
                             brightness = 255;  //移動後は点灯する。
                         }
-                        yield return new WaitForSeconds(timeOut);
+                        yield return new WaitForSeconds(waitTime);
 
                     }
 
@@ -163,7 +166,6 @@
             }
         }
 
-        //TODO:送信する速度が速すぎるかもしれない。その場合はスレッドか？
         //UDPでContoursを送付する。
         void UDPSendContours(Point[][] contours)
         {
@@ -176,43 +178,31 @@
                 contoursNum = contoursNum + contours[i].Length;
                 for (int j = 0; j < contours[i].Length; j++)
                 {
-                    pouse(timeOut);
-                    //timeElapsed += Time.deltaTime;
 
-                    //if (timeElapsed >= timeOut)
-                    //{
-                        // Do anything
-                        double distance = decrementPoints(contours[i][j]);
-                        if (distance <= 1)  //ポイントとポイントの距離が短い場合は処理を行わない。
+                    // Do anything
+                    double distance = decrementPoints(contours[i][j]);
+                    if (distance <= deleteDistance)  //ポイントとポイントの距離が短い場合は処理を行わない。
+                    {
+                        //Debug.Log("DistanceShort");
+                    }
+                    else
+                    {
+                        dgram[0] = (byte)contours[i][j].X;
+                        dgram[1] = (byte)contours[i][j].Y;
+                        dgram[2] = brightness;
+                        try
                         {
-                            //Debug.Log("DistanceShort");
-                        }
-                        else
+                            //udpSender.SendData(dgram);
+                            client.Send(dgram, dgram.Length);
+                            pouse(waitTime);  //ガルバノメーターの処理ができるまで処理をストップする。
+                        }   
+                        catch { }
+                        if (brightness != 255)
                         {
-                            dgram[0] = (byte)contours[i][j].X;
-                            dgram[1] = (byte)contours[i][j].Y;
-                            dgram[2] = brightness;
-                            try
-                            {
-                                //udpSender.SendData(dgram);
-                                client.Send(dgram, dgram.Length);
-                            }
-                            catch { }
-                            if (brightness != 255)
-                            {
-                                brightness = 255;  //移動後は点灯する。
-                            }
-
+                            brightness = 255;  //移動後は点灯する。
                         }
 
-                        //Debug.Log("time:"+timeElapsed);
-                        //Debug.Log("timeout:" + timeOut);
-
-                      //  timeElapsed = 0.0f;
-
-                    //}
-                    
-                    
+                    }
                 }
             }
         }
