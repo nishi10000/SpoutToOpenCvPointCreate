@@ -698,7 +698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ColorSourceRT: {fileID: 8400000, guid: 0289cc3181676054bb92271173241fa9, type: 2}
-  host: localhost
+  host: 192.168.11.177
   port: 8888
   waitTime: 0.003
   deleteDistance: 1
@@ -1682,7 +1682,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1271023978
 RectTransform:
   m_ObjectHideFlags: 0
