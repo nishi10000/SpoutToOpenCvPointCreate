@@ -1,0 +1,4 @@
+# SpoutToOpenCvPointCreate
+Spoutで受信した画像をOpenCVでポイントデータに変換
+変換したデータをUDPにて送付する。
+レーザープロジェクター用のアプリ
